@@ -26,27 +26,37 @@
 
     </script>
     <script>
-        // Create select element
-        var selectElement = document.createElement('select');
-        selectElement.id = 'categorySelect';
-
-        // Create options based on the todoCategory array
-        todoCategory.forEach(function(category) {
-          var optionElement = document.createElement('option');
-          optionElement.value = category._id;
-          optionElement.textContent = category.name;
-          selectElement.appendChild(optionElement);
-        });
-
-        // Add event listener to handle selection change
-        selectElement.addEventListener('change', function() {
-          var selectedCategory = selectElement.value;
-          window.location.href = '/todo?category=' + selectedCategory;
-        });
-
-        // Append select element to the container element
-        var containerElement = document.getElementById('categoryFilterContainer');
-        containerElement.appendChild(selectElement);    
+      // Create select element
+      var selectElement = document.createElement('select');
+      selectElement.id = 'categorySelect';
+    
+      // Create "All" option
+      var allOption = document.createElement('option');
+      allOption.value = '';
+      allOption.textContent = 'All';
+      selectElement.appendChild(allOption);
+    
+      // Create options based on the todoCategory array
+      todoCategory.forEach(function(category) {
+        var optionElement = document.createElement('option');
+        optionElement.value = category._id;
+        optionElement.textContent = category.name;
+        selectElement.appendChild(optionElement);
+      });
+    
+      // Set the selected option based on the current category
+      var currentCategory = new URLSearchParams(window.location.search).get('category');
+      selectElement.value = currentCategory;
+    
+      // Add event listener to handle selection change
+      selectElement.addEventListener('change', function() {
+        var selectedCategory = selectElement.value;
+        window.location.href = '/todo?category=' + selectedCategory;
+      });
+    
+      // Append select element to the container element
+      var containerElement = document.getElementById('categoryFilterContainer');
+      containerElement.appendChild(selectElement);
     </script>
 
     <ul class="list-group" id="todo-list">

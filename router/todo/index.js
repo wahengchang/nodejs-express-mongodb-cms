@@ -141,7 +141,7 @@ router.get('/', async (req, res) => {
       const query = { creator: userId };
   
       if (category) {
-        const todoCategory = await TodoCategory.findOne({ name: category });
+        const todoCategory = await TodoCategory.findOne({ _id: category });
         if (todoCategory) {
           query.category = todoCategory._id;
         }
