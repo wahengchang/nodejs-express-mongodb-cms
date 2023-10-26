@@ -2,7 +2,45 @@ const express = require('express');
 const router = express.Router();
 const Todo = require('../../models/Todo');
 const TodoCategory = require('../../models/TodoCategory');
+const socketio = require('../../utils/socket')
 
+const io = socketio.getIo()
+let connectedClients = socketio.getConnectedClients()
+
+io.on('connection', async (socket) => {
+    const clientId = socket.id;
+    connectedClients[clientId] = socket;
+    function sleep(seconds) {
+        return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+      }
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
+        delete connectedClients[clientId];
+    });
+
+    socket.on('triggerEvent', async (userId) => {
+        try{
+            console.log('Trigger event received: ', userId);
+            await sleep(3)
+            for(let i = 0; i < 3; i++){
+                socket.emit('taskStatus', `created: ${i}`);
+
+                const newTodo = new Todo({
+                    title: `Todo: ${userId}-${i}`,
+                    description:`description: ${userId}-${i}`,
+                    creator: userId,
+                });
+            
+                await newTodo.save();
+                await sleep(3)
+            }
+            socket.emit('finished',currentDateTime)
+        }
+        catch (e){
+            console.error(e)
+        }
+    });
+});
 // GET /todo/create - Render create todo form
 router.get('/create', async (req, res) => {
   try {
@@ -99,7 +137,8 @@ router.get('/:id', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
       const { category, sortBy } = req.query;
-      const query = { creator: req.user._id };
+      const userId = req.user._id
+      const query = { creator: userId };
   
       if (category) {
         const todoCategory = await TodoCategory.findOne({ name: category });
@@ -118,7 +157,7 @@ router.get('/', async (req, res) => {
   
       const todos = await Todo.find(query).sort(sort)
       const todoCategory = await TodoCategory.find()
-      res.render('todo/list', { todos, todoCategory });
+      res.render('todo/list', { todos, todoCategory, userId });
     } catch (error) {
       console.error(error);
       res.status(500).send('Server Error');

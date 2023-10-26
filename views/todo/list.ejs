@@ -2,24 +2,58 @@
 <html>
 <head>
   <%- include('../includes/meta-header', { title: 'Dashboard' }) %>
+  <%- include('../includes/socket-io') %>
 </head>
 <body>
   <%- include('../includes/leftnav') %>
   <%- include('../includes/header') %>
+  <%- include('../includes/messageContainer') %>
   <div class="content">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1>Todo</h1>
       <a href="/todo/create" class="btn btn-primary">Create</a>
+      <button class="btn btn-primary" onclick = "triggerScraper()" > Create 3 items </button>
     </div>
+    <div class="form-group"> 
+      <label for="category">Category</label>
+      <div id="categoryFilterContainer">
+    </div>
+    <script>
+
+    var todos = <%- JSON.stringify(todos) %>;
+    var userId = <%- JSON.stringify(userId) %>;
+    var todoCategory = <%- JSON.stringify(todoCategory) %>;
+
+    </script>
+    <script>
+        // Create select element
+        var selectElement = document.createElement('select');
+        selectElement.id = 'categorySelect';
+
+        // Create options based on the todoCategory array
+        todoCategory.forEach(function(category) {
+          var optionElement = document.createElement('option');
+          optionElement.value = category._id;
+          optionElement.textContent = category.name;
+          selectElement.appendChild(optionElement);
+        });
+
+        // Add event listener to handle selection change
+        selectElement.addEventListener('change', function() {
+          var selectedCategory = selectElement.value;
+          window.location.href = '/todo?category=' + selectedCategory;
+        });
+
+        // Append select element to the container element
+        var containerElement = document.getElementById('categoryFilterContainer');
+        containerElement.appendChild(selectElement);    
+    </script>
 
     <ul class="list-group" id="todo-list">
     </ul>
   </div>
 
   <script>
-    var todos = <%- JSON.stringify(todos) %>;
-    var todoCategory = <%- JSON.stringify(todoCategory) %>;
-
     var todoList = document.getElementById('todo-list');
 
     todos.forEach(function(todo) {
@@ -51,6 +85,38 @@
       console.log('appended')
     });
   </script>
+
+
+<script>
+    const socket = io();
+
+    function triggerScraper() {
+      const currentDateTime = new Date();
+      currentDateTime.toLocaleString();       // -> "2/1/2013 7:37:08 AM"
+      currentDateTime.toLocaleDateString();   // -> "2/1/2013"
+
+      socket.emit('triggerEvent',userId );
+    }
+    // Listen for the "taskStatus" event
+    socket.on('taskStatus', (message) => {
+      console.log(' -=-=-=- recieve: taskStatus -=-=-=-', message)
+      const messageContainer = document.getElementById('messageContainer');
+      messageContainer.innerHTML = message;
+      messageContainer.style.display = 'block';
+      setTimeout(() => {
+        messageContainer.style.display = 'none';
+      }, 5000);
+    });
+
+
+    socket.on('finished', function (scraperId) {
+      var today = new Date();
+      var time = today.getHours() + ':' + today.getMinutes();
+
+      var finishedStatusElements = document.getElementById(`status_${scraperId}`);
+        finishedStatusElements.innerText = 'Finished at ' + time;
+    });
+</script>
   <%- include('../includes/meta-footer') %>
 </body>
 </html>

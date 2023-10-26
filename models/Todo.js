@@ -12,7 +12,6 @@ const todoSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      required: true
     },
     creator: {
       type: mongoose.Schema.Types.ObjectId,

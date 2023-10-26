@@ -8,6 +8,12 @@ const auth = require('./middleware/auth')
 const app = express()
 const mongoose = require('mongoose');
 
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-= socket Connection -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+const http = require('http');
+const server = http.createServer(app);
+const socketio = require('./utils/socket')
+socketio.initSocketServer(server)
+
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-= DB Connection -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 const mongoURI = process.env.mongoURI
 await mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -53,7 +59,7 @@ app.get('/', function (req, res) {
 app.use(express.static('public'))
 const port = process.env.PORT || 3000
 
-app.listen(port, function () {
+server.listen(port, function () {
   console.log(`Example app listening on port ${port}! \n http://localhost:${port}`)
 })
 })()
