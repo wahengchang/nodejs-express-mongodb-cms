@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard</title>
+  <%- include('includes/meta-header', { title: 'Dashboard' }) %>
 </head>
 <body>
-  <h1>Welcome, <%= user.username %>!</h1>
-  <p>This is the dashboard page.</p>
-  <a href="/logout">Logout</a>
+  <%- include('includes/leftnav') %>
+  <%- include('includes/header') %>
 
+  <div class="content">
+    <h1>Welcome, <%= user.username %>!</h1>
+    <p>This is the dashboard page.</p>
+  </div>
+  <%- include('includes/meta-footer') %>
 </body>
 </html>

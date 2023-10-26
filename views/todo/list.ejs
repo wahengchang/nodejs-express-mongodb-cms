@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <%- include('../includes/meta-header', { title: 'Dashboard' }) %>
+</head>
+<body>
+  <%- include('../includes/leftnav') %>
+  <%- include('../includes/header') %>
+  <div class="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Todo</h1>
+      <a href="/todo/create" class="btn btn-primary">Create</a>
+    </div>
+
+    <ul class="list-group" id="todo-list">
+    </ul>
+  </div>
+
+  <script>
+    var todos = <%- JSON.stringify(todos) %>;
+    var todoCategory = <%- JSON.stringify(todoCategory) %>;
+
+    var todoList = document.getElementById('todo-list');
+
+    todos.forEach(function(todo) {
+      var listItem = document.createElement('li');
+      listItem.className = 'list-group-item';
+      
+      var link = document.createElement('a');
+      var title = document.createElement('h3');
+      title.textContent = todo.title;
+
+      link.appendChild(title);
+      link.href = '/todo/' + todo._id; // Replace 'id' with the actual ID of the todo item
+
+      listItem.appendChild(link);
+      
+      var description = document.createElement('p');
+      description.textContent = todo.description;
+      listItem.appendChild(description);
+      
+      var category = document.createElement('p');
+      const targetCategory = todoCategory.find(function(cat) {
+        return cat._id === todo.category
+      }) || {}
+      category.textContent = 'Category: ' + targetCategory.name || ''
+
+      listItem.appendChild(category);
+      
+      todoList.appendChild(listItem);
+      console.log('appended')
+    });
+  </script>
+  <%- include('../includes/meta-footer') %>
+</body>
+</html>

@@ -39,6 +39,7 @@ app.use('/login', auth.requireLogout, require('./router/login/index.js'))
 app.use('/signup', auth.requireLogout, require('./router/signup/index.js'))
 app.use('/logout', auth.requireLogin, require('./router/logout/index.js'))
 app.use('/dashboard', auth.requireLogin, require('./router/dashboard/index.js'))
+app.use('/todo', auth.requireLogin, require('./router/todo/index.js'))
 
 app.get('/', function (req, res) {
   res.send(`Hello World! 

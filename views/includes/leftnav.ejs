@@ -1,0 +1,30 @@
+<style>
+  .active {
+    /* Define your active link styles here */
+    font-weight: bold;
+    color: blue;
+    /* Add any other styles as needed */
+  }
+</style>
+
+<div class="sidebar" style="padding-top: 100px;">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="/todo">todo</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+      </li>
+    </ul>
+  </div>
+
+<script>
+    var path = window.location.pathname;
+      var navLinks = document.querySelectorAll('.nav-link');
+    for (var i = 0; i < navLinks.length; i++) {
+      if (path.includes(navLinks[i].getAttribute('href'))) {
+        navLinks[i].classList.add('active');
+        break;
+      }
+    }
+  </script>
