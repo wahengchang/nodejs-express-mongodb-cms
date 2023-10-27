@@ -22,11 +22,9 @@
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
-  {
-    "engines": {
-      "node": "18.18.2",
-      "yarn": "^1.22.19"
-    }
+  "engines": {
+    "node": "18.18.2",
+    "yarn": "^1.22.19"
   },
   "scripts": {
     "dev": "nodemon --ext js,json index.js",
